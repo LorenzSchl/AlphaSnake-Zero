@@ -1,4 +1,4 @@
-from numpy import power, arctanh, array, float32
+from numpy import power, arctanh, array, float32, clip, exp
 from numpy.random import choice
 from time import time
 
@@ -112,15 +112,12 @@ class Agent:
     
     # a softmax function with customized base
     def softermax(self, z):
-        # the higher the base is, the more it highlights the higher ones
-        normalized = power(self.softmax_base, arctanh(z))
-        # in case all three cells are obstacles (-1.0), softmax will fail on 0.0/0.0
-        sigma = sum(normalized)
-        if sigma == 0.0:
-            return array([1.0/3.0]*3, dtype = float32)
-        else:
-            return normalized/sigma
-    
+        max_z = max(z)
+        z_exp = [clip(exp(zi - max_z), float32(1e-20), float32(1e20)) for zi in z]
+        sum_z_exp = sum(z_exp)
+        softmax_probs = [zi / sum_z_exp for zi in z_exp]
+        return softmax_probs
+
     def argmaxs(self, Z):
         argmaxs = [-1] * len(Z)
         for i in range(len(Z)):

@@ -17,7 +17,7 @@ class Game:
         self.snake_cnt = snake_cnt
         self.health_dec = health_dec
         self.food_spawn_chance = food_spawn_chance
-        self.rewards = [None]*snake_cnt
+        self.rewards = [0.0]*snake_cnt
         
         # standard starting board positions (in order) for 7x7, 11x11, and 19x19
         # battlesnake uses random positions for any non-standard board size
@@ -125,6 +125,7 @@ class Game:
                 snake.health = 100
                 snake.grow()
                 self.food_eaten += 1
+                self.rewards[snake.id] += 0.25 # I Added This In Order to Change the Reward
         
         # spawn food
         if self.food_spawn_chance > 0.0:
@@ -158,6 +159,8 @@ class Game:
                     if snake.length <= s.length and s != snake:
                         kills.add(snake)
                         self.head_collision += 1
+                        self.rewards[s.id] += 0.35 # I Added This In Order to Change the Reward
+                        self.rewards[snake.id] -= 0.35 # I Added This In Order to Change the Reward
                         break
             # check for starvation
             elif snake.health <= 0:
