@@ -1,17 +1,11 @@
 from random import sample, choice, random
 from numpy import array, float32, rot90
 
-# Rewards and Penalies
 FOOD_REWARD = 0.25 # Reward for eating food / Growing in length
 KILL_REWARD = 3.5 # Reward for killing another snake (neu)
 DEATH_PENALTY = 0.65 # Penalty for dying
 WALL_COLLISION_PENALTY = 1.5  # Penalty for colliding with a wall (neu)
 STARVATION_PENALTY = 1.5  # Penalty for starving (neu)
-"""
-TODO:
-1. Higher Penalty for Death (Longer Rounds instead of risky plays)
-"""
-
 
 WALL = 1.0
 MY_HEAD = -1.0
@@ -237,11 +231,9 @@ class Game:
         # gotta do the math to recenter the grid
         width = self.width * 2 - 1
         height = self.height * 2 - 1
-        # Adjusted grid dimensions for 5 Manhattan distance radius
-        grid_size = 5 * 2 + 1
-        grid = [[[0.0, 0.0, 0.0] for _ in range(grid_size)] for _ in range(grid_size)]
-        center = 5  # Center of the grid
-
+        grid = [[[0.0, WALL, 0.0] for col in range(width)] for row in range(height)]
+        center_y = height//2
+        center_x = width//2
         # the original game board
         # it's easier to work on the original board then transfer it onto the grid
         board = [[[0.0, 0.0, 0.0] for col in range(self.width)] for row in range(self.height)]
@@ -268,14 +260,10 @@ class Game:
         
         # from this point, all positions are measured relative to our head
         head_y, head_x = you.head.position
-        # Only consider cells within 5 Manhattan distance from the snake's head
+        board[head_y][head_x] = [MY_HEAD]*3
         for y in range(self.height):
             for x in range(self.width):
-                if abs(y - head_y) + abs(x - head_x) <= 5:
-                    grid_y = y - head_y + center
-                    grid_x = x - head_x + center
-                    if 0 <= grid_y < grid_size and 0 <= grid_x < grid_size:
-                        grid[grid_y][grid_x] = board[y][x]
+                grid[y - head_y + center_y][x - head_x + center_x] = board[y][x]
         
         # k = 0 => identity
         # k = 1 => rotate left
