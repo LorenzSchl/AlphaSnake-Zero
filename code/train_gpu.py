@@ -2,12 +2,12 @@ import tensorflow as tf
 from utils.alpha_nnet import AlphaNNet
 from utils.alpha_snake_zero_trainer import AlphaSnakeZeroTrainer
 
-game_board_height = 11
-game_board_width = 11
+game_board_height = 15 # Standard Modus 11
+game_board_width = 15 # Standard Modus 11
 number_of_snakes = 4
-self_play_games = 64 # Original 256
-max_MCTS_depth = 4 # Original 8
-max_MCTS_breadth = 64 # Original 128
+self_play_games = 256 # Original 256
+max_MCTS_depth = 8 # Original 8
+max_MCTS_breadth = 128 # Original 128
 initial_learning_rate = 0.0001
 learning_rate_decay = 0.98
 
@@ -17,6 +17,11 @@ if gpus:
     try:
         # Restrict TensorFlow to only use the first GPU
         tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
+
+        # Set GPU memory growth
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+
         logical_gpus = tf.config.experimental.list_logical_devices('GPU')
         print(len(gpus), "Physical GPU,", len(logical_gpus), "Logical GPU")
     except RuntimeError as e:

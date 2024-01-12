@@ -59,11 +59,9 @@ class AlphaNNet:
             self.v_net = Model(inputs = X, outputs = Y)
 
     def train(self, X, Y, epochs=32, batch_size=2048):
-        early_stopping = EarlyStopping(monitor='val_loss', patience=10)
-        reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.001)
         tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()))
         self.v_net.fit(array(X), array(Y), epochs=epochs, batch_size=batch_size,
-                       callbacks=[early_stopping, reduce_lr, tensorboard])
+                       callbacks=[tensorboard])
     
     def v(self, X):
         V = self.v_net.predict(array(X))
