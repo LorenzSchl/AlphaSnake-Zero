@@ -60,7 +60,7 @@ class AlphaSnakeZeroTrainer:
             f.write(log)
             f.close()
             # collect training examples
-            batch_size = 1024
+            batch_size = 512
             max_batches = len(Alice.records)//batch_size
             batches = 5
             if batches > max_batches:
