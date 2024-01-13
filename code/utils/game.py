@@ -239,7 +239,7 @@ class Game:
     Return:
         a grid that represents the game state for a snake
     """
-    def make_state(self, you, last_move):
+    def make_state(self, you, last_move, flashlight_mode = True):
         # gotta do the math to recenter the grid
         width = self.width * 2 - 1
         height = self.height * 2 - 1
@@ -278,12 +278,15 @@ class Game:
                 grid_y = y - head_y + center_y
                 grid_x = x - head_x + center_x
 
-                # Check if the cell is within the 5 Manhattan distance radius
-                if abs(y - head_y) + abs(x - head_x) <= 5:
-                    grid[grid_y][grid_x] = board[y][x]
+                if flashlight_mode:
+                    # Check if the cell is within the 5 Manhattan distance radius
+                    if abs(y - head_y) + abs(x - head_x) <= 5:
+                        grid[grid_y][grid_x] = board[y][x]
+                    else:
+                        # Set values outside the radius to 0
+                        grid[grid_y][grid_x] = [0.0, 0.0, 0.0]
                 else:
-                    # Set values outside the radius to 0
-                    grid[grid_y][grid_x] = [0.0, 0.0, 0.0]
+                    grid[grid_y][grid_x] = board[y][x]
 
         for part in you:
             grid[part[0] - head_y + center_y][part[1] - head_x + center_x] = board[part[0]][part[1]]
